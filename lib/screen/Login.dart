@@ -3,14 +3,40 @@ import 'package:control_gastos/components/CustomTextField.dart';
 import 'package:control_gastos/screen/Home.dart';
 import 'package:control_gastos/screen/Register.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
-class Login extends StatelessWidget {
+class Login extends StatefulWidget {
   const Login({super.key});
+
+  @override
+  State<Login> createState() => _LoginState();
+}
+
+class _LoginState extends State<Login> {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  final TextEditingController _emailController = TextEditingController();
+
+  final TextEditingController _passController = TextEditingController();
+
+  Future<bool> iniciar() async {
+    try {
+      final UserCredential userCredential =
+          await _auth.signInWithEmailAndPassword(
+              email: _emailController.text, password: _passController.text);
+      // Si el inicio de sesión es exitoso, retorna true
+      return true;
+    } catch (e) {
+      // Si hay algún error en el inicio de sesión, imprime el error y retorna false
+      print('Error al iniciar sesión: $e');
+      return false;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      debugShowCheckedModeBanner: false, 
+      debugShowCheckedModeBanner: false,
       home: Scaffold(
         backgroundColor: const Color.fromARGB(255, 60, 238, 152),
         appBar: AppBar(
@@ -35,18 +61,28 @@ class Login extends StatelessWidget {
               child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              const CustomTextField(
-                  title: "Correo", hintText: 'example@example.com'),
-              const CustomTextField(title: "Contraseña", hintText: 'xxxxxxxxx'),
+              CustomTextField(
+                  title: "Correo",
+                  hintText: 'example@example.com',
+                  controller: _emailController),
+              CustomTextField(
+                  title: "Contraseña",
+                  hintText: 'xxxxxxxxx',
+                  controller: _passController),
               CustomButton(
                 title: "Iniciar Sesión",
                 bgColor: Color.fromARGB(255, 60, 238, 152),
                 textColor: Colors.black,
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const Home()),
-                  );
+                onPressed: () async {
+                  if (await iniciar()) {
+                    print("paso");
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const Home()),
+                    );
+                  } else {
+                    print("no paso");
+                  }
                 },
               ),
               CustomButton(
@@ -62,7 +98,7 @@ class Login extends StatelessWidget {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => const Register()),
+                    MaterialPageRoute(builder: (context) => Register()),
                   );
                 },
               ),

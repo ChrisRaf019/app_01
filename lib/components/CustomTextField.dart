@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 class CustomTextField extends StatelessWidget {
   final String title;
   final String hintText;
-  const CustomTextField({required this.hintText, required this.title});
+  TextEditingController? controller;
+  CustomTextField({required this.hintText, required this.title, this.controller});
 
   @override
   Widget build(BuildContext context) {
@@ -20,6 +21,7 @@ class CustomTextField extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
               child: TextField(
+                controller: controller,
                   decoration: InputDecoration(
                 enabledBorder: InputBorder.none,
                 focusedBorder: InputBorder.none,
