@@ -209,7 +209,7 @@ class Home extends StatelessWidget {
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(40.0),
                 ),
-                padding: const EdgeInsets.all(20.0),
+                padding: const EdgeInsets.all(1.0),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
@@ -225,7 +225,7 @@ class Home extends StatelessWidget {
                               );
                             },
                       ),
-                      SizedBox(width: 120),
+                        // const SizedBox(width: ),
                       CustomButton(
                       title: "Egreso",
                       bgColor: Color.fromARGB(255, 60, 238, 152),

@@ -113,7 +113,7 @@ class _LoginState extends State<Login> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Icon(Icons.facebook_sharp, size: 60.0),
-                  Icon(Icons.iron_sharp, size: 60.0)
+                  Icon(Icons.add_to_drive, size: 60.0)
                 ],
               )
             ],

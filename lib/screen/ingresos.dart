@@ -10,23 +10,23 @@ class RegistrarIngresos extends StatefulWidget {
   const RegistrarIngresos({super.key});
 
   @override
-  State<RegistrarIngresos> createState() => _RegistrarIngresosresosState();
+  State<RegistrarIngresos> createState() => _RegistrarIngresosState();
 }
 
-class _RegistrarIngresosresosState extends State<RegistrarIngresos> {
+class _RegistrarIngresosState extends State<RegistrarIngresos> {
   final _formKey = GlobalKey<FormState>();
   final _montoController = TextEditingController();
   final _motivoController = TextEditingController();
   DateTime? _selectedDate;
-  final _formatter = NumberFormat("#,##0","es_ PY");
+  final _formatter = NumberFormat("#,##0", "es_PY");
 
   Future<void> _submitData() async {
-    if(!_formKey.currentState!.validate() || _selectedDate == null){
+    if (!_formKey.currentState!.validate() || _selectedDate == null) {
       return;
     }
     final monto = int.parse(_montoController.text.replaceAll('.', ''));
     final motivo = _motivoController.text;
-    final fecha= _selectedDate!;
+    final fecha = _selectedDate!;
 
     await FirebaseFirestore.instance.collection('ingresos').add({
       'monto': monto,
@@ -37,27 +37,35 @@ class _RegistrarIngresosresosState extends State<RegistrarIngresos> {
     Navigator.of(context).pop();
   }
 
-  void _presentDatePicker(){
+  void _presentDatePicker() {
     showDatePicker(
       context: context,
       initialDate: DateTime.now(),
-      firstDate: DateTime(2020), 
+      firstDate: DateTime(2020),
       lastDate: DateTime(2030),
-    ).then((pickedDate){
-      if (pickedDate == null){
+    ).then((pickedDate) {
+      if (pickedDate == null) {
         return;
       }
+      final currentTime = TimeOfDay.now();
+      final combinedDateTime = DateTime(
+        pickedDate.year,
+        pickedDate.month,
+        pickedDate.day,
+        currentTime.hour,
+        currentTime.minute,
+      );
       setState(() {
-        _selectedDate = pickedDate;
+        _selectedDate = combinedDateTime;
       });
     });
   }
 
   void _formatAmount(String value) {
-    if (value.isEmpty){
-      _montoController.value=TextEditingValue(
+    if (value.isEmpty) {
+      _montoController.value = TextEditingValue(
         text: '',
-        selection: TextSelection.collapsed(offset: 0)
+        selection: TextSelection.collapsed(offset: 0),
       );
       return;
     }
@@ -69,7 +77,6 @@ class _RegistrarIngresosresosState extends State<RegistrarIngresos> {
     );
   }
 
-  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -88,12 +95,12 @@ class _RegistrarIngresosresosState extends State<RegistrarIngresos> {
                 controller: _montoController,
                 keyboardType: TextInputType.number,
                 onChanged: _formatAmount,
-                validator: (value){
-                  if(value == null || value.isEmpty){
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
                     return 'Por favor ingrese un monto';
                   }
-                  if(int.tryParse(value.replaceAll('.', ''))== null){
-                    return 'Por favor ingrese un numero valido';
+                  if (int.tryParse(value.replaceAll('.', '')) == null) {
+                    return 'Por favor ingrese un número válido';
                   }
                   return null;
                 },
@@ -101,9 +108,9 @@ class _RegistrarIngresosresosState extends State<RegistrarIngresos> {
               TextFormField(
                 decoration: InputDecoration(labelText: 'Motivo'),
                 controller: _motivoController,
-                validator: (value){
-                  if(value == null || value.isEmpty){
-                    return 'Por favor ingrese un motivio';
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Por favor ingrese un motivo';
                   }
                   return null;
                 },
@@ -114,25 +121,28 @@ class _RegistrarIngresosresosState extends State<RegistrarIngresos> {
                   Expanded(
                     child: Text(
                       _selectedDate == null
-                      ? 'No se ha seleccionado una fecha'
-                      : 'Fecha: ${_selectedDate!.toLocal()}'.split(' ')[0],
+                          ? 'No se ha seleccionado una fecha'
+                          : 'Fecha: ${DateFormat('dd/MM/yyyy HH:mm').format(_selectedDate!)}',
                     ),
                   ),
-                  TextButton(
-                    onPressed: _presentDatePicker, 
-                    child: Text('Seleccionar Fecha'),
-                  )
-                ]
+                  CustomButton(
+                    title:'Seleccionar Fecha',
+                    textColor: Colors.white,
+                    bgColor: Colors.green,
+                    onPressed: _presentDatePicker,
+                    //child: Text('Seleccionar Fecha'),
+                  ),
+                ],
               ),
               SizedBox(height: 20),
               ElevatedButton(
                 onPressed: _submitData,
-                child: Text('Registrar Ingreso')
+                child: Text('Registrar Ingreso'),
               ),
             ],
           ),
-        )
         ),
+      ),
     );
   }
 }
