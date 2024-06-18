@@ -7,7 +7,9 @@ class EgresosScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Lista de Egresos'),
+        title: const Center(
+          child: Text('Lista de Egresos',  textAlign: TextAlign.center)
+        ),
       ),
       body: EgresosList(),
     );
@@ -43,6 +45,7 @@ class EgresosList extends StatelessWidget {
               leading: const Icon(Icons.shopping_cart, color: Colors.red), 
               title: Text('Monto: ${NumberFormat.currency(symbol: '', decimalDigits: 0, locale: 'es_PY').format(monto)} Gs.'),
               subtitle: Text('Motivo: $motivo\nFecha: $formattedDate'),
+              
             );
           },
         );

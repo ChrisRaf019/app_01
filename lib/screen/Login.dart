@@ -13,11 +13,17 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
+  var _mensaje = "";
+
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   final TextEditingController _emailController = TextEditingController();
 
   final TextEditingController _passController = TextEditingController();
+
+  String Message(String text) {
+    return text;
+  }
 
   Future<bool> iniciar() async {
     try {
@@ -35,6 +41,7 @@ class _LoginState extends State<Login> {
 
   @override
   Widget build(BuildContext context) {
+
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
@@ -75,13 +82,40 @@ class _LoginState extends State<Login> {
                 textColor: Colors.black,
                 onPressed: () async {
                   if (await iniciar()) {
-                    print("paso");
                     Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => const Home()),
                     );
                   } else {
-                    print("no paso");
+                    showDialog<void>(
+                      context: context,
+                      barrierDismissible: false, // user must tap button!
+                      builder: (BuildContext context) {
+                        if(_emailController.text == "" && _passController.text == "") {
+                          _mensaje = "Campos vacios";
+                        } else {
+                          _mensaje = "Usuario o contraseña son incorrecto";
+                        }
+                        return AlertDialog(
+                          title: const Text('Login'),
+                          content: SingleChildScrollView(
+                            child: ListBody(
+                              children: <Widget>[
+                                Text(_mensaje),
+                              ],
+                            ),
+                          ),
+                          actions: <Widget>[
+                            TextButton(
+                              child: const Text('Aceptar'),
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                            ),
+                          ],
+                        );
+                      },
+                    );
                   }
                 },
               ),

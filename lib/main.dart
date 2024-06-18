@@ -1,5 +1,6 @@
 import 'package:control_gastos/firebase_options.dart';
 import 'package:control_gastos/screen/Logo.dart';
+import 'package:control_gastos/screen/ingresoChart.dart';
 import 'package:control_gastos/screen/ingresos.dart';
 import 'package:control_gastos/screen/list_egresos.dart';
 import 'package:control_gastos/screen/list_ingresos.dart';
@@ -24,7 +25,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home:  Logo(),
+      home: IngresosChartScreen(),
     );
   }
 }

@@ -251,14 +251,14 @@ class Home extends StatelessWidget {
               borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(20),
                   topRight: Radius.circular(20))),
-          child: Row(
+          child: const Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              const Icon(Icons.home),
-              const Icon(Icons.search),
+              Icon(Icons.home),
+              Icon(Icons.search),
               Icon(Icons.directions_boat),
-              const Icon(Icons.list),
-              const Icon(Icons.person),
+              Icon(Icons.list),
+              Icon(Icons.person),
             ],
           ),
         ),
