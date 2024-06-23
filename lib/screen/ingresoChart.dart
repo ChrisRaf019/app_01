@@ -8,7 +8,7 @@ class IngresosChartScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Gráfico de Egresos'),
+        title: const Text('Gráfico de Ingresos'),
       ),
       body: IngresosChart(),
     );
@@ -46,7 +46,10 @@ class IngresosChart extends StatelessWidget {
         }
 
         // Convertir los datos a un formato adecuado para el gráfico de barras
-        final sortedKeys = egresosMap.keys.toList()..sort((a, b) => DateFormat('dd/MM/yyyy').parse(a).compareTo(DateFormat('dd/MM/yyyy').parse(b)));
+        final sortedKeys = egresosMap.keys.toList()
+          ..sort((a, b) => DateFormat('dd/MM/yyyy')
+              .parse(a)
+              .compareTo(DateFormat('dd/MM/yyyy').parse(b)));
         List<BarChartGroupData> barGroups = [];
         for (var i = 0; i < sortedKeys.length; i++) {
           barGroups.add(BarChartGroupData(
@@ -73,7 +76,8 @@ class IngresosChart extends StatelessWidget {
                   sideTitles: SideTitles(
                     showTitles: true,
                     getTitlesWidget: (value, meta) {
-                      if (value.toInt() < 0 || value.toInt() >= sortedKeys.length) {
+                      if (value.toInt() < 0 ||
+                          value.toInt() >= sortedKeys.length) {
                         return const SizedBox.shrink();
                       }
                       return SideTitleWidget(

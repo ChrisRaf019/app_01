@@ -26,9 +26,9 @@ class CustomButton extends StatelessWidget {
               ),
             ),
           ),
-          onPressed: onPressed, // Llama a la función onPressed cuando se presione el botón
+          onPressed: onPressed,
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 5),
+            padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 8),
             child: Text(
               title,
               style: TextStyle(

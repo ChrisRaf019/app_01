@@ -1,10 +1,11 @@
+import 'package:control_gastos/screen/list_ingresos.dart';
+import 'package:intl/intl.dart';
+import 'package:flutter/material.dart';
+import 'package:control_gastos/screen/Home.dart';
+import 'package:control_gastos/screen/egresos.dart';
 import 'package:control_gastos/components/CustomButton.dart';
 import 'package:control_gastos/components/CustomTextField.dart';
-import 'package:control_gastos/screen/Home.dart';
-import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:intl/intl.dart';
 
 class RegistrarIngresos extends StatefulWidget {
   const RegistrarIngresos({super.key});
@@ -63,7 +64,7 @@ class _RegistrarIngresosState extends State<RegistrarIngresos> {
 
   void _formatAmount(String value) {
     if (value.isEmpty) {
-      _montoController.value = TextEditingValue(
+      _montoController.value = const TextEditingValue(
         text: '',
         selection: TextSelection.collapsed(offset: 0),
       );
@@ -79,70 +80,150 @@ class _RegistrarIngresosState extends State<RegistrarIngresos> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Registrar Ingreso'),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              TextFormField(
-                decoration: InputDecoration(labelText: 'Monto'),
-                controller: _montoController,
-                keyboardType: TextInputType.number,
-                onChanged: _formatAmount,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Por favor ingrese un monto';
-                  }
-                  if (int.tryParse(value.replaceAll('.', '')) == null) {
-                    return 'Por favor ingrese un número válido';
-                  }
-                  return null;
-                },
-              ),
-              TextFormField(
-                decoration: InputDecoration(labelText: 'Motivo'),
-                controller: _motivoController,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Por favor ingrese un motivo';
-                  }
-                  return null;
-                },
-              ),
-              SizedBox(height: 20),
-              Row(
+    return MaterialApp(
+        debugShowCheckedModeBanner: false,
+        home: Scaffold(
+          backgroundColor: const Color.fromARGB(255, 60, 238, 152),
+          appBar: AppBar(
+            toolbarHeight: 200,
+            centerTitle: true,
+            automaticallyImplyLeading: true,
+            title: const Text(
+              'Registrar Ingresos',
+              style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+            ),
+            backgroundColor: const Color.fromARGB(255, 60, 238, 152),
+          ),
+          body: Container(
+            alignment: Alignment.center,
+            decoration: const BoxDecoration(
+              borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(50), topRight: Radius.circular(59)),
+              color: Colors.white,
+            ),
+            padding: const EdgeInsets.all(20.0),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[
-                  Expanded(
-                    child: Text(
-                      _selectedDate == null
-                          ? 'No se ha seleccionado una fecha'
-                          : 'Fecha: ${DateFormat('dd/MM/yyyy HH:mm').format(_selectedDate!)}',
-                    ),
+                  CustomTextField(
+                      title: "Ingrese el monto",
+                      controller: _montoController,
+                      keyboardType: TextInputType.number,
+                      hintText: 'Monto',
+                      onChanged: _formatAmount,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Por favor ingrese un monto';
+                        }
+                        if (int.tryParse(value.replaceAll('.', '')) == null) {
+                          return 'Por favor ingrese un número válido';
+                        }
+                        return null;
+                      }),
+                  CustomTextField(
+                      title: "Ingrese el motivo",
+                      controller: _motivoController,
+                      hintText: 'Motivo',
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Por favor ingrese un motivo';
+                        }
+                        return null;
+                      }),
+                  const SizedBox(height: 20),
+                  Row(
+                    children: <Widget>[
+                      Expanded(
+                        child: Text(
+                          _selectedDate == null
+                              ? 'No se ha seleccionado una fecha'
+                              : 'Fecha: ${DateFormat('dd/MM/yyyy HH:mm').format(_selectedDate!)}',
+                        ),
+                      ),
+                      CustomButton(
+                        title: 'Seleccionar Fecha',
+                        textColor: Colors.black,
+                        bgColor: const Color.fromARGB(255, 60, 238, 152),
+                        onPressed: _presentDatePicker,
+                        //child: Text('Seleccionar Fecha'),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 20),
+                  CustomButton(
+                    title: "Registrar Ingreso",
+                    bgColor: const Color.fromARGB(255, 60, 238, 152),
+                    textColor: Colors.black,
+                    onPressed: _submitData,
                   ),
                   CustomButton(
-                    title:'Seleccionar Fecha',
-                    textColor: Colors.white,
-                    bgColor: Colors.green,
-                    onPressed: _presentDatePicker,
-                    //child: Text('Seleccionar Fecha'),
+                    title: "Lista de Ingresos",
+                    bgColor: const Color.fromARGB(255, 60, 238, 152),
+                    textColor: Colors.black,
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => IngresosScreen()),
+                      );
+                    },
                   ),
                 ],
               ),
-              SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: _submitData,
-                child: Text('Registrar Ingreso'),
-              ),
-            ],
+            ),
           ),
-        ),
-      ),
-    );
+          bottomNavigationBar: Container(
+            height: 60,
+            decoration: BoxDecoration(
+                color: Colors.green[50],
+                borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(20),
+                    topRight: Radius.circular(20))),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                IconButton(
+                  icon: const Icon(Icons.search),
+                  onPressed: () {},
+                ),
+                IconButton(
+                  icon: const Icon(Icons.south_east_rounded),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const RegistrarEgresos()),
+                    );
+                  },
+                ),
+                IconButton(
+                  icon: const Icon(Icons.home),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const Home()),
+                    );
+                  },
+                ),
+                IconButton(
+                  icon: const Icon(Icons.north_east_rounded),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const RegistrarIngresos()),
+                    );
+                  },
+                ),
+                IconButton(
+                  icon: const Icon(Icons.person),
+                  onPressed: () {},
+                ),
+              ],
+            ),
+          ),
+        ));
   }
 }

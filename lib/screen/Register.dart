@@ -1,46 +1,57 @@
+import 'package:control_gastos/screen/Login.dart';
+import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:control_gastos/components/CustomButton.dart';
 import 'package:control_gastos/components/CustomTextField.dart';
-import 'package:control_gastos/screen/Home.dart';
-import 'package:control_gastos/screen/Login.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
 
 class Register extends StatefulWidget {
-   Register({super.key});
+  Register({super.key});
 
   @override
   State<Register> createState() => _RegisterState();
 }
 
 class _RegisterState extends State<Register> {
-//instanciar con firebase
- final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
- final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passController = TextEditingController();
+  final TextEditingController _confirmPassController = TextEditingController();
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _birthDateController = TextEditingController();
 
- final TextEditingController _passController = TextEditingController();
-
-//
-Future registro() async{
-  print("llamar funcion");
-  try {
-    final UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
-      email: _emailController.text, 
-      password: _passController.text
-      );
-      //si el registro es exitoso inicia sesion
-      // Navigator.pushNamed(context, 'Home');
-  } catch (e) {
-    //si el registro no es correcto
-    print('Error al registrarse: $e');
+  // Validador básico para campos obligatorios
+  String? _validateNotEmpty(String? value, String fieldName) {
+    if (value == null || value.isEmpty) {
+      return 'Por favor ingresa tu $fieldName';
+    }
+    return null;
   }
-}
 
-//
+  Future<void> _registro() async {
+    try {
+      final UserCredential userCredential =
+          await _auth.createUserWithEmailAndPassword(
+              email: _emailController.text, password: _passController.text);
+      // Si el registro es exitoso, podrías navegar a la pantalla de inicio
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const Login()),
+      );
+    } catch (e) {
+      // Si hay algún error en el registro, imprime el error
+      print('Error al registrarse: $e');
+    }
+  }
+
+  // Estado para verificar si se debe mostrar el mensaje de campos obligatorios
+  bool _showRequiredMessage = false;
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      debugShowCheckedModeBanner: false, 
+      debugShowCheckedModeBanner: false,
       home: Scaffold(
         backgroundColor: const Color.fromARGB(255, 60, 238, 152),
         appBar: AppBar(
@@ -57,66 +68,130 @@ Future registro() async{
           alignment: Alignment.center,
           decoration: const BoxDecoration(
             borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(50), topRight: Radius.circular(59)),
+              topLeft: Radius.circular(50),
+              topRight: Radius.circular(59),
+            ),
             color: Colors.white,
           ),
           padding: const EdgeInsets.all(20.0),
           child: SingleChildScrollView(
-              child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              CustomTextField(
-                  title: "Nombre Y Apellido", hintText: 'Juan Perez' ),
-              CustomTextField(
-                  title: "Email", hintText: 'example@example.com', controller: _emailController),
-              CustomTextField(
-                  title: "Numero", hintText: '+595 971 456 789'),
-              CustomTextField(
-                  title: "Fecha De Nacimiento", hintText: 'DD / MM / YY'),
-              CustomTextField(
-                  title: "Contraseña  ", hintText: 'example@example.com', controller: _passController),
-              CustomTextField(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                CustomTextField(
+                  title: "Nombre y Apellido",
+                  hintText: 'Juan Perez',
+                  controller: _nameController,
+                  validator: (value) =>
+                      _validateNotEmpty(value, 'nombre y apellido'),
+                ),
+                CustomTextField(
+                  title: "Email",
+                  hintText: 'example@example.com',
+                  controller: _emailController,
+                  validator: (value) =>
+                      _validateNotEmpty(value, 'correo electrónico'),
+                ),
+                CustomTextField(
+                  title: "Número",
+                  hintText: '+595 971 456 789',
+                  controller: _phoneController,
+                  keyboardType: TextInputType.phone,
+                ),
+                CustomTextField(
+                  title: "Fecha de Nacimiento",
+                  hintText: 'DD / MM / YY',
+                  controller: _birthDateController,
+                ),
+                CustomTextField(
+                  title: "Contraseña",
+                  hintText: '********',
+                  controller: _passController,
+                  obscureText: true,
+                  validator: (value) => _validateNotEmpty(value, 'contraseña'),
+                ),
+                CustomTextField(
                   title: "Confirmar contraseña",
-                  hintText: 'example@example.com'),
-              const Center(
-                child: Text(
-                  "Al continuar, usted acepta los",
-                  style: TextStyle(
-                    fontSize: 14,
+                  hintText: '********',
+                  controller: _confirmPassController,
+                  obscureText: true,
+                  validator: (value) {
+                    if (value != _passController.text) {
+                      return 'Las contraseñas no coinciden';
+                    }
+                    return null;
+                  },
+                ),
+                if (_showRequiredMessage)
+                  const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 10.0),
+                    child: Center(
+                      child: Text(
+                        'Por favor complete todos los campos obligatorios.',
+                        style: TextStyle(color: Colors.red),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ),
+                const Center(
+                  child: Text(
+                    "Al continuar, usted acepta los",
+                    style: TextStyle(
+                      fontSize: 14,
+                    ),
                   ),
                 ),
-              ),
-              const Center(
-                child: Text(
-                  "Términos y Condiciones",
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
+                const Center(
+                  child: Text(
+                    "Términos y Condiciones",
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
-              ),
-              CustomButton(
-                title: "Registrarme",
-                bgColor: Color.fromARGB(255, 60, 238, 152),
-                textColor: Colors.black,
-                onPressed: () {
-                  registro();
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const Home()),
-                  );
-                },
-              ),
-              const Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text('Ya tienes una cuenta? '),
-                  Text("Iniciar sesion aqui",
-                      style: TextStyle(color: Colors.blue))
-                ],
-              )
-            ],
-          )),
+                CustomButton(
+                  title: "Registrarme",
+                  bgColor: Color.fromARGB(255, 60, 238, 152),
+                  textColor: Colors.black,
+                  onPressed: () {
+                    setState(() {
+                      _showRequiredMessage = false;
+                    });
+                    if (_nameController.text.isEmpty ||
+                        _emailController.text.isEmpty ||
+                        _passController.text.isEmpty ||
+                        _confirmPassController.text.isEmpty) {
+                      setState(() {
+                        _showRequiredMessage = true;
+                      });
+                      return;
+                    }
+                    _registro();
+                  },
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text('Ya tienes una cuenta? '),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const Login()),
+                        );
+                      },
+                      child: const Text(
+                        "Iniciar sesión aquí",
+                        style: TextStyle(color: Colors.blue),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );

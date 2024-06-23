@@ -26,6 +26,13 @@ class _LoginState extends State<Login> {
   }
 
   Future<bool> iniciar() async {
+    if (_emailController.text.isEmpty || _passController.text.isEmpty) {
+      setState(() {
+        _mensaje = "Por favor, completa todos los campos.";
+      });
+      return false;
+    }
+
     try {
       final UserCredential userCredential =
           await _auth.signInWithEmailAndPassword(
@@ -35,13 +42,15 @@ class _LoginState extends State<Login> {
     } catch (e) {
       // Si hay algún error en el inicio de sesión, imprime el error y retorna false
       print('Error al iniciar sesión: $e');
+      setState(() {
+        _mensaje = "Error al iniciar sesión: $e";
+      });
       return false;
     }
   }
 
   @override
   Widget build(BuildContext context) {
-
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
@@ -57,7 +66,7 @@ class _LoginState extends State<Login> {
           backgroundColor: const Color.fromARGB(255, 60, 238, 152),
         ),
         body: Container(
-          alignment: Alignment.center,
+          alignment: Alignment.topCenter,
           decoration: const BoxDecoration(
             borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(50), topRight: Radius.circular(50)),
@@ -65,93 +74,75 @@ class _LoginState extends State<Login> {
           ),
           padding: const EdgeInsets.all(20.0),
           child: SingleChildScrollView(
-              child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              CustomTextField(
-                  title: "Correo",
-                  hintText: 'example@example.com',
-                  controller: _emailController),
-              CustomTextField(
-                  title: "Contraseña",
-                  hintText: 'xxxxxxxxx',
-                  controller: _passController),
-              CustomButton(
-                title: "Iniciar Sesión",
-                bgColor: Color.fromARGB(255, 60, 238, 152),
-                textColor: Colors.black,
-                onPressed: () async {
-                  if (await iniciar()) {
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                CustomTextField(
+                    title: "Correo",
+                    hintText: 'example@example.com',
+                    controller: _emailController),
+                CustomTextField(
+                    title: "Contraseña",
+                    hintText: 'xxxxxxxxx',
+                    controller: _passController),
+                if (_mensaje.isNotEmpty)
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 10),
+                    child: Center(
+                      child: Text(
+                        _mensaje,
+                        style: const TextStyle(color: Colors.red),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ),
+                CustomButton(
+                  title: "Iniciar Sesión",
+                  bgColor: const Color.fromARGB(255, 60, 238, 152),
+                  textColor: Colors.black,
+                  onPressed: () async {
+                    if (await iniciar()) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const Home()),
+                      );
+                    }
+                  },
+                ),
+                CustomButton(
+                  title: "Olvidaste tu contraseña?",
+                  bgColor: Colors.white,
+                  textColor: Colors.black,
+                  onPressed: () {},
+                ),
+                CustomButton(
+                  title: "Registrarse",
+                  bgColor: const Color.fromARGB(255, 60, 238, 152),
+                  textColor: Colors.black,
+                  onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => const Home()),
+                      MaterialPageRoute(builder: (context) => Register()),
                     );
-                  } else {
-                    showDialog<void>(
-                      context: context,
-                      barrierDismissible: false, // user must tap button!
-                      builder: (BuildContext context) {
-                        if(_emailController.text == "" && _passController.text == "") {
-                          _mensaje = "Campos vacios";
-                        } else {
-                          _mensaje = "Usuario o contraseña son incorrecto";
-                        }
-                        return AlertDialog(
-                          title: const Text('Login'),
-                          content: SingleChildScrollView(
-                            child: ListBody(
-                              children: <Widget>[
-                                Text(_mensaje),
-                              ],
-                            ),
-                          ),
-                          actions: <Widget>[
-                            TextButton(
-                              child: const Text('Aceptar'),
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                              },
-                            ),
-                          ],
-                        );
-                      },
-                    );
-                  }
-                },
-              ),
-              CustomButton(
-                title: "Olvidaste tu contraseña?",
-                bgColor: Colors.white,
-                textColor: Colors.black,
-                onPressed: () {},
-              ),
-              CustomButton(
-                title: "Registrarse",
-                bgColor: Color.fromARGB(255, 60, 238, 152),
-                textColor: Colors.black,
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => Register()),
-                  );
-                },
-              ),
-              CustomButton(
-                title: "or sign up with",
-                bgColor: Colors.white,
-                textColor: Colors.black54,
-                onPressed: () {},
-              ),
-              const Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Icon(Icons.facebook_sharp, size: 60.0),
-                  Icon(Icons.add_to_drive, size: 60.0)
-                ],
-              )
-            ],
-          )),
+                  },
+                ),
+                CustomButton(
+                  title: "or sign up with",
+                  bgColor: Colors.white,
+                  textColor: Colors.black54,
+                  onPressed: () {},
+                ),
+                const Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Icon(Icons.facebook_sharp, size: 60.0),
+                    Icon(Icons.add_to_drive, size: 60.0)
+                  ],
+                )
+              ],
+            ),
+          ),
         ),
       ),
     );

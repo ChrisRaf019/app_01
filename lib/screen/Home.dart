@@ -1,8 +1,9 @@
-import 'package:control_gastos/components/CustomButton.dart';
-import 'package:control_gastos/components/Graphic.dart';
 import 'package:flutter/material.dart';
 import 'package:control_gastos/screen/egresos.dart';
 import 'package:control_gastos/screen/ingresos.dart';
+import 'package:control_gastos/components/Graphic.dart';
+import 'package:control_gastos/components/CustomButton.dart';
+
 class Home extends StatelessWidget {
   const Home({super.key});
 
@@ -94,8 +95,8 @@ class Home extends StatelessWidget {
                               bottomLeft: Radius.circular(20),
                               topLeft: Radius.circular(20))),
                       child: const Center(
-                        child: Text("30%",
-                            style: TextStyle(color: Colors.white)),
+                        child:
+                            Text("30%", style: TextStyle(color: Colors.white)),
                       ),
                     ),
                     Container(
@@ -134,8 +135,8 @@ class Home extends StatelessWidget {
                         children: [
                           Container(
                               decoration: BoxDecoration(
-                                  color: const Color.fromARGB(
-                                      255, 60, 238, 152),
+                                  color:
+                                      const Color.fromARGB(255, 60, 238, 152),
                                   borderRadius: BorderRadius.circular(10)),
                               child: const Padding(
                                   padding: EdgeInsets.all(10.0),
@@ -175,20 +176,17 @@ class Home extends StatelessWidget {
                           children: [
                             Icon(Icons.arrow_outward, size: 18),
                             Text("Ingreso",
-                                style:
-                                    TextStyle(fontWeight: FontWeight.bold)),
+                                style: TextStyle(fontWeight: FontWeight.bold)),
                             Text("Gs4,120.00",
                                 style: TextStyle(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.bold))
+                                    fontSize: 15, fontWeight: FontWeight.bold))
                           ],
                         ),
                         Column(
                           children: [
                             Icon(Icons.arrow_outward, size: 18),
                             Text("Gastos",
-                                style:
-                                    TextStyle(fontWeight: FontWeight.bold)),
+                                style: TextStyle(fontWeight: FontWeight.bold)),
                             Text("Gs1.187.40",
                                 style: TextStyle(
                                     fontSize: 15,
@@ -201,46 +199,6 @@ class Home extends StatelessWidget {
                   ],
                 ),
               ),
-              Container(
-                height: 100,
-                margin: const EdgeInsets.all(20),
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(40.0),
-                ),
-                padding: const EdgeInsets.all(1.0),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                      CustomButton(
-                      title: "Ingreso",
-                      bgColor: Color.fromARGB(255, 60, 238, 152),
-                      textColor: Colors.black,
-                      onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => const RegistrarIngresos()),
-                              );
-                            },
-                      ),
-                        // const SizedBox(width: ),
-                      CustomButton(
-                      title: "Egreso",
-                      bgColor: Color.fromARGB(255, 60, 238, 152),
-                      textColor: Colors.black,
-                      onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => const RegistrarEgresos()),
-                              );
-                            },
-                      ),
-                    ],
-                ),
-              ),
             ],
           ),
         ),
@@ -249,16 +207,42 @@ class Home extends StatelessWidget {
           decoration: BoxDecoration(
               color: Colors.green[50],
               borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(20),
-                  topRight: Radius.circular(20))),
-          child: const Row(
+                  topLeft: Radius.circular(20), topRight: Radius.circular(20))),
+          child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              Icon(Icons.home),
-              Icon(Icons.search),
-              Icon(Icons.directions_boat),
-              Icon(Icons.list),
-              Icon(Icons.person),
+              IconButton(
+                icon: const Icon(Icons.search),
+                onPressed: () {},
+              ),
+              IconButton(
+                icon: const Icon(Icons.south_east_rounded),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const RegistrarEgresos()),
+                  );
+                },
+              ),
+              IconButton(
+                icon: const Icon(Icons.home),
+                onPressed: () {},
+              ),
+              IconButton(
+                icon: const Icon(Icons.north_east_rounded),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const RegistrarIngresos()),
+                  );
+                },
+              ),
+              IconButton(
+                icon: const Icon(Icons.person),
+                onPressed: () {},
+              ),
             ],
           ),
         ),
